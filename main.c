@@ -8,7 +8,7 @@
 void delay(int a);
 void I2CInit();
 void i2c_bus_write(uint8_t address, uint8_t *txBuf);
-uint8_t i2c_bus_read(uint8_t address, uint8_t *rxbuf);
+void i2c_bus_read(uint8_t address, uint8_t *rxbuf);
 
 uint8_t txData[9] = { memoryCell , 0x41, 0x42, 0x43, 0x44, 0x45, 0x46, 0x47, 0x48 };
 uint8_t *ptxbuf;
@@ -33,7 +33,7 @@ int main(void) {
 	}
 }
 
-uint8_t i2c_bus_read(uint8_t address, uint8_t *rxbuf) {
+void i2c_bus_read(uint8_t address, uint8_t *rxbuf) {
 	I2C_GenerateSTART(I2C1, ENABLE);
 	while (!I2C_CheckEvent(I2C1, I2C_EVENT_MASTER_MODE_SELECT)) {
 		;
@@ -64,7 +64,6 @@ uint8_t i2c_bus_read(uint8_t address, uint8_t *rxbuf) {
 		;
 	*(rxbuf++) = I2C_ReceiveData(I2C1);
 	I2C_GenerateSTOP(I2C1, ENABLE);
-	return 0x01;
 }
 
 void i2c_bus_write(uint8_t address, uint8_t *ptxbuf) {
