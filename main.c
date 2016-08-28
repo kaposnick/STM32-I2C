@@ -71,7 +71,7 @@ void i2c_bus_write(uint8_t address, uint8_t *ptxbuf) {
 	while (!I2C_CheckEvent(I2C1, I2C_EVENT_MASTER_MODE_SELECT)) {
 		;
 	}
-	I2C_Send7bitAddress(I2C1, address, I2C_Direction_Transmitter);
+	I2C_Send7bitAddress(I2C1, address >> 1, I2C_Direction_Transmitter);
 	while (!I2C_CheckEvent(I2C1, I2C_EVENT_MASTER_TRANSMITTER_MODE_SELECTED))
 		;
 	I2C_SendData(I2C1, *ptxbuf);
