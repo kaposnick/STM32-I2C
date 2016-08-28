@@ -12,16 +12,19 @@
 
 #define NOP()	asm("nop")
 
+#define memoryCell	0x70
+#define eepromAddress	0x50
+
 void delay(int a);
 void I2CInit();
 void i2c_bus_write(uint8_t address, uint8_t *txBuf);
 uint8_t i2c_bus_read(uint8_t address, uint8_t *rxbuf);
 
-uint8_t txData[9] = { 0x70, 0x41, 0x42, 0x43, 0x44, 0x45, 0x46, 0x47, 0x48 };
+uint8_t txData[9] = { memoryCell , 0x41, 0x42, 0x43, 0x44, 0x45, 0x46, 0x47, 0x48 };
 uint8_t *ptxbuf;
 
 uint8_t *prxbuf;
-uint8_t rxData[9] = { 0x70, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 };
+uint8_t rxData[9] = { memoryCell , 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 };
 
 int main(void) {
 
@@ -31,10 +34,10 @@ int main(void) {
 	I2CInit();
 
 	while (1) {
-		i2c_bus_write(0xa0, ptxbuf);
+		i2c_bus_write(eepromAddress, ptxbuf);
 		delay(1000000);
 		NOP();
-		i2c_bus_read(0xa0, prxbuf);
+		i2c_bus_read(eepromAddress, prxbuf);
 		delay(1000000);
 		NOP();
 	}
@@ -45,7 +48,7 @@ uint8_t i2c_bus_read(uint8_t address, uint8_t *rxbuf) {
 	while (!I2C_CheckEvent(I2C1, I2C_EVENT_MASTER_MODE_SELECT)) {
 		;
 	}
-	I2C_Send7bitAddress(I2C1, address, I2C_Direction_Transmitter);
+	I2C_Send7bitAddress(I2C1, address >> 1, I2C_Direction_Transmitter);
 	while (!I2C_CheckEvent(I2C1, I2C_EVENT_MASTER_TRANSMITTER_MODE_SELECTED))
 		;
 	I2C_SendData(I2C1, *(rxbuf++));
